@@ -1,3 +1,4 @@
+use assert_cmd::cargo::CommandCargoExt;
 use assert_cmd::Command;
 use predicates::prelude::predicate;
 use rand::{distributions::Alphanumeric, Rng};
@@ -45,4 +46,27 @@ fn run(args: &[&str], expected_file: &str) -> TestResult {
         .success()
         .stdout(expected);
     Ok(())
+}
+
+fn run_stdin(input_file: &str, args: &[&str], expected_file: &str) -> TestResult {
+    let input = fs::read_to_string(input_file)?;
+    let expected = fs::read_to_string(expected_file)?;
+
+    Command::cargo_bin(PRG)?
+        .args(args)
+        .write_stdin(input)
+        .assert()
+        .success()
+        .stdout(expected);
+    Ok(())
+}
+
+#[test]
+fn bustle() -> TestResult {
+    run(&[BUSTLE], "tests/expected/the-bustle.txt.out")
+}
+
+#[test]
+fn bustle_stdin() -> TestResult {
+    run_stdin(BUSTLE, &["-"], "tests/expected/tthe-bustle.txt.stdin.out")
 }
