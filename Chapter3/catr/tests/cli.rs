@@ -68,5 +68,5 @@ fn bustle() -> TestResult {
 
 #[test]
 fn bustle_stdin() -> TestResult {
-    run_stdin(BUSTLE, &["-"], "tests/expected/tthe-bustle.txt.stdin.out")
+    run_stdin(BUSTLE, &["-"], "tests/expected/the-bustle.txt.stdin.out")
 }
