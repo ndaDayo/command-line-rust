@@ -15,6 +15,30 @@ pub fn get_args() -> MyResult<Config> {
         .version("0.1")
         .author("nda dayo")
         .about("rust head")
+        .arg(
+            Arg::with_name("lines")
+                .short("n")
+                .long("lines")
+                .value_name("LINES")
+                .help("Number of lines")
+                .default_value("10"),
+        )
+        .arg(
+            Arg::with_name("bytes")
+                .short("c")
+                .long("bytes")
+                .value_name("BYTES")
+                .takes_value(true)
+                .conflicts_with("lines")
+                .help("Number of bytes"),
+        )
+        .arg(
+            Arg::with_name("files")
+                .value_name("FILE")
+                .multiple(true)
+                .default_value("-")
+                .help("input file"),
+        )
         .get_matches();
 
     Ok(Config {
@@ -30,7 +54,10 @@ pub fn run(config: Config) -> MyResult<()> {
 }
 
 fn parse_positive_int(val: &str) -> MyResult<usize> {
-    unimplemented!();
+    match val.parse() {
+        Ok(n) if n > 0 => Ok(n),
+        _ => Err(From::from(val)),
+    }
 }
 
 #[test]
