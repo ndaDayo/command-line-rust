@@ -1,5 +1,11 @@
 use clap::{App, Arg};
-use std::error::Error;
+
+use std::fs::File;
+
+use std::{
+    error::Error,
+    io::{self, BufRead, BufReader},
+};
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
@@ -12,6 +18,12 @@ pub struct Config {
     chars: bool,
 }
 
+fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
+    match filename {
+        "-" => Ok(Box::new(BufReader::new(io::stdin()))),
+        _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
+    }
+}
 pub fn get_args() -> MyResult<Config> {
     let matches = App::new("wcr")
         .version("0.1.0")
@@ -54,12 +66,23 @@ pub fn get_args() -> MyResult<Config> {
         )
         .get_matches();
 
+    let mut lines = matches.is_present("lines");
+    let mut words = matches.is_present("words");
+    let mut bytes = matches.is_present("bytes");
+    let chars = matches.is_present("chars");
+
+    if [lines, words, bytes, chars].iter().all(|v| v == &false) {
+        lines = true;
+        words = true;
+        bytes = true;
+    }
+
     Ok(Config {
         files: matches.values_of_lossy("files").unwrap(),
-        lines: matches.is_present("lines"),
-        words: matches.is_present("words"),
-        bytes: matches.is_present("bytes"),
-        chars: matches.is_present("chars"),
+        lines,
+        words,
+        bytes,
+        chars,
     })
 }
 
