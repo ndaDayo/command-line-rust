@@ -17,6 +17,41 @@ pub fn get_args() -> MyResult<Config> {
         .version("0.1.0")
         .author("ndadayo")
         .about("rust wc")
+        .arg(
+            Arg::with_name("files")
+                .value_name("FILE")
+                .help("input file")
+                .default_value("-")
+                .multiple(true),
+        )
+        .arg(
+            Arg::with_name("words")
+                .short("w")
+                .long("words")
+                .help("show word count")
+                .takes_value(false),
+        )
+        .arg(
+            Arg::with_name("chars")
+                .short("m")
+                .long("chars")
+                .help("show character count")
+                .takes_value(false),
+        )
+        .arg(
+            Arg::with_name("bytes")
+                .short("c")
+                .long("bytes")
+                .help("show byte count")
+                .takes_value(false),
+        )
+        .arg(
+            Arg::with_name("lines")
+                .short("l")
+                .long("line")
+                .help("show line count")
+                .takes_value(false),
+        )
         .get_matches();
 
     Ok(Config {
