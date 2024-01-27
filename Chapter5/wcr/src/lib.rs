@@ -140,8 +140,18 @@ pub fn count(mut file: impl BufRead) -> MyResult<FileInfo> {
     })
 }
 
+fn format_field(value: usize, show: bool) -> String {
+    if show {
+        format!("{:>8}", value)
+    } else {
+        "".to_string()
+    }
+}
+
 #[cfg(test)]
 mod tests {
+    use crate::format_field;
+
     use super::{count, FileInfo};
     use std::io::Cursor;
 
@@ -160,5 +170,12 @@ mod tests {
         };
 
         assert_eq!(info.unwrap(), expected);
+    }
+
+    #[test]
+    fn test_format_field() {
+        assert_eq!(format_field(1, false), "");
+        assert_eq!(format_field(3, true), "       3");
+        assert_eq!(format_field(10, true), "      10");
     }
 }
